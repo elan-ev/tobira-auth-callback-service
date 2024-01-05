@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# This start script will activate python environment from venv folder
+# and read environment variables from conf/tobira-auth.env file.
+# Then the project will be started. All passed arguments will be passed
+# through to the process.
+
 # Project path.
 PROJECT_PATH="$(readlink -f $(dirname $(readlink -f $0))/..)"
 # Path to the configuration environment file.

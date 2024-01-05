@@ -15,6 +15,20 @@ auth_callback_bp = Blueprint('auth_callback', url_prefix='/auth')
 
 @auth_callback_bp.get('/')
 async def auth_callback(request: Request) -> JSONResponse:
+    """Tobira-Auth auth callback endpoint
+
+    Allways returns a json with `outcome` filed. If its value is `no-user`, the username header is missing.
+    Otherwise, the `outcome` value is `user` and additional fields describe the user metadata.
+    The fields are:
+
+    - `username`: The username
+    - `displaName`: The users full name to show it in Tobira.
+    - `email`: The users email address
+    - `roles`: List of user roles based on affiliation header and additional metadata like courses, the user belongs to.
+
+    :param request: The request.
+    :return: Tobira-Auth callback json.
+    """
     username = request.headers.get(
         get_config(request.app, 'username_header', ConfigConstants.USERNAME_HEADER),
         None)
@@ -44,6 +58,12 @@ async def auth_callback(request: Request) -> JSONResponse:
 
 
 async def get_user_roles(request: Request, username: str):
+    """Returns a list of user roles for the given user.
+
+    :param request: The request.
+    :param username: The username to get the roles for.
+    :return: User roles list, may be empty.
+    """
     roles = [
         'ROLE_ANONYMOUS',
         f'ROLE_USER_{username.strip()}'
@@ -70,9 +90,18 @@ async def get_user_roles(request: Request, username: str):
 
 @AsyncTTL(time_to_live=300, maxsize=1024, skip_args=1)
 async def get_user_course_roles(request: Request, username: str):
+    """Get user roles based on course IDs, belongs to the user.
+
+    For performance reasons the result will be cached for a limited amount of time.
+
+    :param request: The request.
+    :param username: The username to get the course roles for.
+    :return: List of user roles based on course IDs, may be empty.
+    """
     logger.debug(f'get_user_course_roles: Query user course roles for {username}.')
     roles = []
     # === Custom part begins here ===
+    # Call external endpoint to get the course IDs the user belongs to. For each ID, create a user role.
     user_courses_ws_url = get_config(request.app, 'USER_COURSES_WS_URL', None)
     if not user_courses_ws_url:
         return roles

@@ -9,6 +9,15 @@ from tobiraauth.server import create_app
 
 
 def main():
+    """Project entry point for development.
+
+    After loading the configuration file `conf/tobira-auth.env`
+    the webservice will be started with debug configuration.
+
+    **Do not use it in production.**
+    """
+    logger.warning('This starting point should only be used during development. '
+                   'Please read documentation how to use this project in production.')
     try:
         from dotenv import load_dotenv
         load_dotenv(dotenv_path='../conf/tobira-auth.env')

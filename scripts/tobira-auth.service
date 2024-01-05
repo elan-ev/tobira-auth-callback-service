@@ -12,7 +12,6 @@ WorkingDirectory=/opt/tobiraauth/src
 Environment=PYTHONPATH=/opt/tobiraauth/src:$PYTHONPATH
 EnvironmentFile=/opt/tobiraauth/conf/tobira-auth-env
 ExecStart=/opt/tobiraauth/venv/bin/sanic tobiraauth.server:create_app --no-motd
-#ExecReload=kill -HUP $MAINPID
 Restart=on-failure
 RestartSec=1
 
