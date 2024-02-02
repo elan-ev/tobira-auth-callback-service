@@ -4,9 +4,6 @@
 from sanic import Sanic
 from sanic.response import text
 
-from tobiraauth.auth_callback import auth_callback_bp
-from tobiraauth.dummy_user_webservices import dummy_user_ws_blueprint
-from tobiraauth.login_callback import login_callback_bp
 from tobiraauth.utils import format_env_name
 
 
@@ -43,8 +40,11 @@ def register_blueprints(app: Sanic):
     @app.before_server_start
     async def registration(app):
         if app.config.get('ENABLE_AUTH_CALLBACK', 'False'):
+            from tobiraauth.auth_callback import auth_callback_bp
             app.blueprint(auth_callback_bp)
         if app.config.get('ENABLE_LOGIN_CALLBACK', 'False'):
+            from tobiraauth.login_callback import login_callback_bp
             app.blueprint(login_callback_bp)
         if app.config.get('ENABLE_DUMMY_USER_SERVICE', 'False'):
+            from tobiraauth.dummy_user_webservices import dummy_user_ws_blueprint
             app.blueprint(dummy_user_ws_blueprint)

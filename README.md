@@ -24,4 +24,4 @@ sh scripts/run.sh
 ```
 
 In production, you may run this project as Systemd service. 
-You can find a service file template [here](./scripts/tobira-auth.service).
+The service file template is located [here](./scripts/tobira-auth.service).
