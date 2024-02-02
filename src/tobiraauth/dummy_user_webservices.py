@@ -34,5 +34,5 @@ async def get_user_courses(request, username: str):
 
 @dummy_user_ws_blueprint.after_server_start
 async def configure_endpoints(app):
-    app.config.update({f'USER_LOGIN_WS_URL': 'http://localhost:8000/user/login/{username}'})
-    app.config.update({f'USER_COURSES_WS_URL': 'http://localhost:8000/user/{username}/courses'})
+    app.config.update({'USER_LOGIN_WS_URL': 'http://localhost:8000/user/login/{username}'})
+    app.config.update({'USER_COURSES_WS_URL': 'http://localhost:8000/user/{username}/courses'})

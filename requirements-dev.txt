@@ -1,1 +1,5 @@
 python-dotenv==1.0.0
+pytest
+pytest_httpx
+pytest-asyncio
+sanic-testing
