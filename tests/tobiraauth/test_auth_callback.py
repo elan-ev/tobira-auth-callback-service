@@ -50,7 +50,7 @@ async def test_auth_callback_all_headers(app):
         ConfigConstants.USERNAME_HEADER: 'jane',
         ConfigConstants.DISPLAY_NAME_HEADER: 'Jane Doe',
         ConfigConstants.EMAIL_HEADER: 'jane.doe@edu.org',
-        ConfigConstants.AFFILIATION_HEADER: 'staff',
+        ConfigConstants.AFFILIATION_HEADER: 'member;staff',
     }
     request, response = await app.asgi_client.get('/auth', headers=headers)
     assert response.status == 200

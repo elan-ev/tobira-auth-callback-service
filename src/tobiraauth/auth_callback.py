@@ -72,7 +72,7 @@ async def get_user_roles(request: Request, username: str):
         get_config(request.app, 'affiliation_header', ConfigConstants.AFFILIATION_HEADER),
         [])
     for user_affiliations in user_affiliations_headers:
-        for user_affiliation in user_affiliations.split(','):
+        for user_affiliation in user_affiliations.split(';'):
             if 'staff' in user_affiliation.strip():
                 roles += [
                     'ROLE_TOBIRA_UPLOAD',
