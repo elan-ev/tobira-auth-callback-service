@@ -45,13 +45,12 @@ async def test_login_callback_valid_data(app, httpx_mock: HTTPXMock):
     assert userdata.get('username') == 'jane'
     assert userdata.get('displayName') == 'Jane Doe'
     assert userdata.get('email') == 'jane@edu.org'
+    assert userdata.get('userRole') == 'ROLE_USER_JANE'
     roles = userdata.get('roles')
     assert 'ROLE_ANONYMOUS' in roles
+    assert 'ROLE_USER' in roles
+    assert 'ROLE_USER_JANE' in roles
     assert 'ROLE_USER_jane' in roles
-    assert 'ROLE_COURSE_1_Learner' in roles
-    assert 'ROLE_COURSE_2_Learner' in roles
-    assert 'ROLE_COURSE_3_Learner' in roles
-    assert 'ROLE_COURSE_4_Learner' in roles
 
 
 @pytest.mark.asyncio

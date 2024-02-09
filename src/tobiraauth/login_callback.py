@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import re
 
 from cache import AsyncTTL
 from httpx import AsyncClient
@@ -82,12 +83,14 @@ async def login_user(request: Request, username: str, password: str) -> dict:
         userdata = response.json()
     if not userdata or 'username' not in userdata or 'email' not in userdata:
         return result
+    user_role = f'ROLE_USER_{re.sub("[^a-zA-Z0-9]", '_', username.strip()).upper()}'
     roles = await get_user_roles(request, username)
     result = {
       'outcome': 'user',
       'username': username,
       'displayName': f'{userdata.get("given_name")} {userdata.get("sur_name")}',
       'email': userdata.get('email'),
+      'userRole': user_role,
       'roles': roles,
     }
     # === Custom part ends here ===

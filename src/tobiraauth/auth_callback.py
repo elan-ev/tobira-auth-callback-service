@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import re
 
 from cache import AsyncTTL
 from httpx import AsyncClient
@@ -11,6 +12,18 @@ from tobiraauth.config import ConfigConstants
 from tobiraauth.utils import get_config
 
 auth_callback_bp = Blueprint('auth_callback', url_prefix='/auth')
+
+
+def get_user_role(username: str) -> str:
+    """Generate user role by replacing special characters in username by '_',
+    make it upper case and prefix with 'ROLE_USER_'. If username is empty, return empty string.
+
+    :param username: The username to get user role for
+    :return: Users role
+    """
+    if not username:
+        return ''
+    return f'ROLE_USER_{re.sub("[^a-zA-Z0-9]", '_', username.strip()).upper()}'
 
 
 @auth_callback_bp.get('/')
@@ -47,6 +60,7 @@ async def auth_callback(request: Request) -> JSONResponse:
       'username': username,
       'displayName': display_name,
       'email': email,
+      'userRole': get_user_role(username),
       'roles': []
     }
     try:
@@ -64,8 +78,11 @@ async def get_user_roles(request: Request, username: str):
     :param username: The username to get the roles for.
     :return: User roles list, may be empty.
     """
+
     roles = [
         'ROLE_ANONYMOUS',
+        'ROLE_USER',
+        get_user_role(username),
         f'ROLE_USER_{username.strip()}'
     ]
     user_affiliations_headers = request.headers.getall(
