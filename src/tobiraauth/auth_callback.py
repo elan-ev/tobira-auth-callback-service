@@ -23,7 +23,7 @@ def get_user_role(username: str) -> str:
     """
     if not username:
         return ''
-    return f'ROLE_USER_{re.sub("[^a-zA-Z0-9]", '_', username.strip()).upper()}'
+    return f'ROLE_USER_{re.sub("[^a-zA-Z0-9]", "_", username.strip()).upper()}'
 
 
 @auth_callback_bp.get('/')
