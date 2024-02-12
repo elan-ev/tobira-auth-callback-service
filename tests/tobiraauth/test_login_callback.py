@@ -50,7 +50,7 @@ async def test_login_callback_valid_data(app, httpx_mock: HTTPXMock):
     assert 'ROLE_ANONYMOUS' in roles
     assert 'ROLE_USER' in roles
     assert 'ROLE_USER_JANE' in roles
-    assert 'ROLE_USER_jane' in roles
+    assert 'ROLE_AAI_USER_jane' in roles
 
 
 @pytest.mark.asyncio

@@ -40,7 +40,7 @@ async def test_auth_callback_username_header(app):
     roles = userdata.get('roles')
     assert 'ROLE_ANONYMOUS' in roles
     assert 'ROLE_USER_JANE' in roles
-    assert 'ROLE_USER_jane' in roles
+    assert 'ROLE_AAI_USER_jane' in roles
     assert 'ROLE_TOBIRA_EDITOR' not in roles
     assert 'ROLE_TOBIRA_STUDIO' not in roles
     assert 'ROLE_TOBIRA_UPLOAD' not in roles
@@ -68,7 +68,7 @@ async def test_auth_callback_all_headers(app):
     assert 'ROLE_ANONYMOUS' in roles
     assert 'ROLE_USER' in roles
     assert 'ROLE_USER_JANE_EDU_ORG' in roles
-    assert 'ROLE_USER_jane@edu.org' in roles
+    assert 'ROLE_AAI_USER_jane@edu.org' in roles
     assert 'ROLE_TOBIRA_EDITOR' in roles
     assert 'ROLE_TOBIRA_STUDIO' in roles
     assert 'ROLE_TOBIRA_UPLOAD' in roles
@@ -91,7 +91,7 @@ async def test_auth_callback_user_courses(app, httpx_mock: HTTPXMock):
     assert 'ROLE_ANONYMOUS' in roles
     assert 'ROLE_USER' in roles
     assert 'ROLE_USER_JANE_EDU_ORG' in roles
-    assert 'ROLE_USER_jane@edu.org' in roles
+    assert 'ROLE_AAI_USER_jane@edu.org' in roles
     assert 'ROLE_COURSE_1_Learner' in roles
     assert 'ROLE_COURSE_2_Learner' in roles
     assert 'ROLE_COURSE_3_Learner' in roles
