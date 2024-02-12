@@ -83,7 +83,7 @@ async def get_user_roles(request: Request, username: str):
         'ROLE_ANONYMOUS',
         'ROLE_USER',
         get_user_role(username),
-        f'ROLE_USER_{username.strip()}'
+        f'ROLE_AAI_USER_{username.strip()}'
     ]
     user_affiliations_headers = request.headers.getall(
         get_config(request.app, 'affiliation_header', ConfigConstants.AFFILIATION_HEADER),
