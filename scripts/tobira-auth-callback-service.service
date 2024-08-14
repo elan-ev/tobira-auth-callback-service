@@ -1,5 +1,5 @@
 [Unit]
-Description=Tobira-Auth service
+Description=Tobira-Auth-Callback-Service
 Documentation=https://github.com/elan-ev/tobira-auth-callback-service/
 Wants=network.target
 After=network-online.target
@@ -8,10 +8,9 @@ After=network-online.target
 Type=exec
 #User=tobiraauth
 #Group=tobiraauth
-WorkingDirectory=/opt/tobira-auth/src
-Environment=PYTHONPATH=/opt/tobira-auth/src:$PYTHONPATH
-EnvironmentFile=/opt/tobira-auth/conf/tobira-auth.env
-ExecStart=/opt/tobira-auth/venv/bin/sanic tobiraauth.server:create_app --no-motd
+WorkingDirectory=/opt/tobira-auth-callback-service
+EnvironmentFile=/etc/default/tobira-auth-callback-service.env
+ExecStart=/opt/tobira-auth-callback-service/bin/sanic tobiraauth.server:create_app --no-motd
 Restart=on-failure
 RestartSec=1
 

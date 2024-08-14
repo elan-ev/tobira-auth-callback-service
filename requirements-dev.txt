@@ -1,5 +1,5 @@
 python-dotenv==1.0.1
-pytest
+pytest>=7.0
 pytest_httpx==0.30.0
 pytest-asyncio
 sanic-testing
