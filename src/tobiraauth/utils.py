@@ -43,3 +43,23 @@ def is_admin(app: Sanic, username: str) -> bool:
         else:
             app.ctx.admin_users = []
     return username in app.ctx.admin_users
+
+
+def is_admin_mail(app: Sanic, mail: str) -> bool:
+    """Return True, if the email address is defined as admin in the config file.
+
+    :app: Sanic app instance
+    :mail: email address to test
+    :return: True if the email address is defined as admin, False otherwise.
+    """
+    if getattr(app.ctx, 'admin_users_mail', None) is None:
+        admin_users_mail_config = get_config(app=app, env_name='ADMIN_USERS_MAIL', default=None)
+        if admin_users_mail_config is not None:
+            if ',' in admin_users_mail_config:
+                app.ctx.admin_users_mail = [mail.strip() for mail in admin_users_mail_config.split(',')
+                                            if mail.strip() != '']
+            else:
+                app.ctx.admin_users_mail = [admin_users_mail_config,]
+        else:
+            app.ctx.admin_users_mail = []
+    return mail in app.ctx.admin_users_mail

@@ -9,7 +9,7 @@ from sanic.log import logger
 from sanic.response import json, JSONResponse
 
 from tobiraauth.config import ConfigConstants
-from tobiraauth.utils import get_config, is_admin
+from tobiraauth.utils import get_config, is_admin, is_admin_mail
 
 auth_callback_bp = Blueprint('auth_callback', url_prefix='/auth')
 
@@ -64,18 +64,19 @@ async def auth_callback(request: Request) -> JSONResponse:
       'roles': []
     }
     try:
-        user_roles = await get_user_roles(request, username)
+        user_roles = await get_user_roles(request, username, email)
         result['roles'] = list({*user_roles})
     except:
         logger.exception(f'Unable to get user roles for user {username}.')
     return json(result)
 
 
-async def get_user_roles(request: Request, username: str):
+async def get_user_roles(request: Request, username: str, mail: str = None):
     """Returns a list of user roles for the given user.
 
     :param request: The request.
     :param username: The username to get the roles for.
+    :param mail: The users mail address for admin privileges check.
     :return: User roles list, may be empty.
     """
 
@@ -88,7 +89,7 @@ async def get_user_roles(request: Request, username: str):
     user_affiliations_headers = request.headers.getall(
         get_config(request.app, 'affiliation_header', ConfigConstants.AFFILIATION_HEADER),
         [])
-    if is_admin(request.app, username):
+    if is_admin(request.app, username) or is_admin_mail(request.app, mail):
         roles += [
             'ROLE_TOBIRA_ADMIN',
             'ROLE_TOBIRA_UPLOAD',
