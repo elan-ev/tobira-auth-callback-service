@@ -35,7 +35,7 @@ async def auth_callback(request: Request) -> JSONResponse:
     The fields are:
 
     - `username`: The username
-    - `displaName`: The users full name to show it in Tobira.
+    - `displayName`: The users full name to show it in Tobira.
     - `email`: The users email address
     - `roles`: List of user roles based on affiliation header and additional metadata like courses, the user belongs to.
 
