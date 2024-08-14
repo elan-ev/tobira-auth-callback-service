@@ -55,6 +55,9 @@ async def auth_callback(request: Request) -> JSONResponse:
     email = request.headers.get(
         get_config(request.app, 'email_header', ConfigConstants.EMAIL_HEADER),
         None)
+    home_organization = request.headers.get(
+        get_config(request.app, 'home_organization', ConfigConstants.HOME_ORGANIZATION_HEADER),
+        None)
 
     if display_name is None:
         given_name = request.headers.get(
@@ -75,8 +78,24 @@ async def auth_callback(request: Request) -> JSONResponse:
       'userRole': get_user_role(username),
       'roles': []
     }
+
+    custom_roles = get_config(request.app, 'custom_roles', None)
+    if custom_roles is not None:
+        for role in custom_roles.split(','):
+            role = role.strip()
+            if role.strip() != '':
+                if '{' in role:
+                    result.get('roles').append(role.format(
+                        username=username,
+                        email=email,
+                        home_organization=home_organization,
+                    ))
+                else:
+                    result.get('roles').append(role)
     try:
         user_roles = await get_user_roles(request, username, email)
+        if len(result.get('roles')) > 0:
+            user_roles.extend(result.get('roles'))
         result['roles'] = list({*user_roles})
     except:
         logger.exception(f'Unable to get user roles for user {username}.')

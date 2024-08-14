@@ -134,6 +134,31 @@ async def test_auth_callback_display_name_custom_format(app):
 
 
 @pytest.mark.asyncio
+async def test_auth_callback_custom_roles(app):
+    app.config['CUSTOM_ROLES'] = ('ROLE_CUSTOM_USERNAME_{username}, '
+                                  'ROLE_CUSTOM_EMAIL_{email}, '
+                                  'ROLE_CUSTOM_HOME_ORG_{home_organization},'
+                                  'ROLE_CUSTOM_VALUE')
+    headers = {
+        ConfigConstants.USERNAME_HEADER: 'jane-custom-roles',
+        ConfigConstants.EMAIL_HEADER: 'jane@edu.org',
+        ConfigConstants.HOME_ORGANIZATION_HEADER: 'edu.org',
+    }
+    request, response = await app.asgi_client.get('/auth', headers=headers)
+    assert response.status == 200
+    assert response.content_type == 'application/json'
+    userdata = response.json
+    assert userdata.get('outcome') == 'user'
+    assert userdata.get('username') == headers.get(ConfigConstants.USERNAME_HEADER)
+    roles = userdata.get('roles')
+    assert f'ROLE_CUSTOM_USERNAME_{headers.get(ConfigConstants.USERNAME_HEADER)}' in roles
+    assert f'ROLE_CUSTOM_EMAIL_{headers.get(ConfigConstants.EMAIL_HEADER)}' in roles
+    assert f'ROLE_CUSTOM_HOME_ORG_{headers.get(ConfigConstants.HOME_ORGANIZATION_HEADER)}' in roles
+    assert 'ROLE_CUSTOM_VALUE' in roles
+
+
+
+@pytest.mark.asyncio
 async def test_auth_callback_is_admin_user(app):
     app.config['ADMIN_USERS_USERNAME'] = 'jane.admin@edu.org, bob@edu.org'
     headers = {

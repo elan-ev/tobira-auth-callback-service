@@ -10,3 +10,4 @@ class ConfigConstants:
     SURNAME_HEADER = "surname"
     EMAIL_HEADER = "mail"
     AFFILIATION_HEADER = "affiliation"
+    HOME_ORGANIZATION_HEADER = "homeOrganization"
