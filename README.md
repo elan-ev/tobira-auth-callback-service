@@ -30,7 +30,7 @@ From here you can start develop the customizations for your institution.
 To run the project during development you can use a shell script `sh scripts/run.sh`
 or use python wrapper directly `PYTHONPATH=src python src/main.py`.
 You may want to set some environment variables.
-They are listed and documented [here](src/tobiraauth/conf/tobira-auth-callback-service.env).
+They are listed and documented [here](src/tobiraauth/conf/tobira-auth.env).
 This configuration file will be loaded by `run.sh` and `main.py`.
 
 ## How to run in production
@@ -39,22 +39,22 @@ In production, you should run this project as Systemd service.
 The installation process is a bit different.
 ```shell
 # Create python virtual environment
-python -m venv /opt/tobira-auth-callback-service
+python -m venv /opt/tobira-auth
 # Activate python virtual environment
-source /opt/tobira-auth-callback-service/bin/activate
+source /opt/tobira-auth/bin/activate
 # Install project and dependencies
 pip install .
 ```
 At this point you have installed the project into your virtual environment.
 The sources aren't needed any more and can be removed.
 Next steps are: create Systemd service and install configuraiton.
-The service file template is located [here](scripts/tobira-auth-callback-service.service).
-The configuration fie is located [here](src/tobiraauth/conf/tobira-auth-callback-service.env).
+The service file template is located [here](scripts/tobira-auth.service).
+The configuration fie is located [here](src/tobiraauth/conf/tobira-auth.env).
 Please review the configuration file before installing.
 Following steps will install the configuration file and Systemd service.
 ```shell
-cp src/tobiraauth/conf/tobira-auth-callback-service.env /etc/default/
-cp ./scripts/tobira-auth-callback-service.service /etc/systemd/system/
+cp src/tobiraauth/conf/tobira-auth.env /etc/default/
+cp ./scripts/tobira-auth.service /etc/systemd/system/
 systemctl daemon-reload
-systemctl enable --now tobira-auth-callback-service.service
+systemctl enable --now tobira-auth.service
 ```

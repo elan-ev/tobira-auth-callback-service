@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 # This start script will activate python environment from venv folder
-# and read environment variables from src/tobiraauth/conf/tobira-auth-callback-service.env file.
+# and read environment variables from src/tobiraauth/conf/tobira-auth.env file.
 # Then the project will be started. All passed arguments will be passed
 # through to the process.
 
 # Project path.
 PROJECT_PATH="$(readlink -f $(dirname $(readlink -f $0))/..)"
 # Path to the configuration environment file.
-ENV_FILE="${PROJECT_PATH}/src/tobiraauth/conf/tobira-auth-callback-service.env"
+ENV_FILE="${PROJECT_PATH}/src/tobiraauth/conf/tobira-auth.env"
 # Path to the python virtual environment (venv).
 # Skip venv activation if empty.
 VENV_PATH="${PROJECT_PATH}/venv"

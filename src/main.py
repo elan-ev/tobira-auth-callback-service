@@ -11,7 +11,7 @@ from tobiraauth.server import create_app
 def main():
     """Project entry point for development.
 
-    After loading the configuration file `tobiraauth/conf/tobira-auth-callback-service.env`
+    After loading the configuration file `tobiraauth/conf/tobira-auth.env`
     the webservice will be started with debug configuration.
 
     **Do not use it in production.**
@@ -20,7 +20,7 @@ def main():
                    'Please read documentation how to use this project in production.')
     try:
         from dotenv import load_dotenv
-        load_dotenv(dotenv_path='tobiraauth/conf/tobira-auth-callback-service.env')
+        load_dotenv(dotenv_path='tobiraauth/conf/tobira-auth.env')
     except:
         logger.warning(f'Tobira-Auth configuration file not loaded. '
                        f'Do you installed development requirements from requirements-dev.txt?')
