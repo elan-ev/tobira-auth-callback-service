@@ -99,6 +99,41 @@ async def test_auth_callback_user_courses(app, httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio
+async def test_auth_callback_display_name_format(app):
+    headers = {
+        ConfigConstants.USERNAME_HEADER: 'jane@edu.org',
+        ConfigConstants.GIVEN_NAME_HEADER: 'Jane',
+        ConfigConstants.SURNAME_HEADER: 'Doe',
+    }
+    request, response = await app.asgi_client.get('/auth', headers=headers)
+    assert response.status == 200
+    assert response.content_type == 'application/json'
+    userdata = response.json
+    assert userdata.get('outcome') == 'user'
+    assert userdata.get('username') == headers.get(ConfigConstants.USERNAME_HEADER)
+    assert userdata.get('displayName') == (f'{headers.get(ConfigConstants.GIVEN_NAME_HEADER)} '
+                                           f'{headers.get(ConfigConstants.SURNAME_HEADER)}')
+
+
+@pytest.mark.asyncio
+async def test_auth_callback_display_name_custom_format(app):
+    app.config['DISPLAY_NAME_FORMAT'] = '{surname}, {given_name}'
+    headers = {
+        ConfigConstants.USERNAME_HEADER: 'jane@edu.org',
+        ConfigConstants.GIVEN_NAME_HEADER: 'Jane',
+        ConfigConstants.SURNAME_HEADER: 'Doe',
+    }
+    request, response = await app.asgi_client.get('/auth', headers=headers)
+    assert response.status == 200
+    assert response.content_type == 'application/json'
+    userdata = response.json
+    assert userdata.get('outcome') == 'user'
+    assert userdata.get('username') == headers.get(ConfigConstants.USERNAME_HEADER)
+    assert userdata.get('displayName') == (f'{headers.get(ConfigConstants.SURNAME_HEADER)}, '
+                                           f'{headers.get(ConfigConstants.GIVEN_NAME_HEADER)}')
+
+
+@pytest.mark.asyncio
 async def test_auth_callback_is_admin_user(app):
     app.config['ADMIN_USERS_USERNAME'] = 'jane.admin@edu.org, bob@edu.org'
     headers = {

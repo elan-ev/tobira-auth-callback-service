@@ -45,6 +45,10 @@ async def auth_callback(request: Request) -> JSONResponse:
     username = request.headers.get(
         get_config(request.app, 'username_header', ConfigConstants.USERNAME_HEADER),
         None)
+
+    if username is None:
+        return json({'outcome': 'no-user'})
+
     display_name = request.headers.get(
         get_config(request.app, 'display_name_header', ConfigConstants.DISPLAY_NAME_HEADER),
         None)
@@ -52,8 +56,16 @@ async def auth_callback(request: Request) -> JSONResponse:
         get_config(request.app, 'email_header', ConfigConstants.EMAIL_HEADER),
         None)
 
-    if not username:
-        return json({'outcome': 'no-user'})
+    if display_name is None:
+        given_name = request.headers.get(
+            get_config(request.app, 'given_name_header', ConfigConstants.GIVEN_NAME_HEADER),
+            None)
+        surname = request.headers.get(
+            get_config(request.app, 'surname_header', ConfigConstants.SURNAME_HEADER),
+            None)
+        if given_name is not None and surname is not None:
+            display_name_format = get_config(request.app, 'display_name_format', '{given_name} {surname}')
+            display_name = display_name_format.format(given_name=given_name, surname=surname)
 
     result = {
       'outcome': 'user',
