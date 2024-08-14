@@ -9,7 +9,7 @@ from sanic.log import logger
 from sanic.response import json, JSONResponse
 
 from tobiraauth.config import ConfigConstants
-from tobiraauth.utils import get_config
+from tobiraauth.utils import get_config, is_admin
 
 auth_callback_bp = Blueprint('auth_callback', url_prefix='/auth')
 
@@ -88,14 +88,22 @@ async def get_user_roles(request: Request, username: str):
     user_affiliations_headers = request.headers.getall(
         get_config(request.app, 'affiliation_header', ConfigConstants.AFFILIATION_HEADER),
         [])
-    for user_affiliations in user_affiliations_headers:
-        for user_affiliation in user_affiliations.split(';'):
-            if 'staff' in user_affiliation.strip():
-                roles += [
-                    'ROLE_TOBIRA_UPLOAD',
-                    'ROLE_TOBIRA_STUDIO',
-                    'ROLE_TOBIRA_EDITOR',
-                ]
+    if is_admin(request.app, username):
+        roles += [
+            'ROLE_TOBIRA_ADMIN',
+            'ROLE_TOBIRA_UPLOAD',
+            'ROLE_TOBIRA_STUDIO',
+            'ROLE_TOBIRA_EDITOR',
+        ]
+    else:
+        for user_affiliations in user_affiliations_headers:
+            for user_affiliation in user_affiliations.split(';'):
+                if 'staff' in user_affiliation.strip():
+                    roles += [
+                        'ROLE_TOBIRA_UPLOAD',
+                        'ROLE_TOBIRA_STUDIO',
+                        'ROLE_TOBIRA_EDITOR',
+                    ]
     try:
         course_roles = await get_user_course_roles(request, username)
         if course_roles and isinstance(course_roles, list):

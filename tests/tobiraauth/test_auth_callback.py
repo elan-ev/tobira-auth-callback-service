@@ -96,3 +96,38 @@ async def test_auth_callback_user_courses(app, httpx_mock: HTTPXMock):
     assert 'ROLE_COURSE_2_Learner' in roles
     assert 'ROLE_COURSE_3_Learner' in roles
     assert 'ROLE_COURSE_4_Learner' in roles
+
+
+@pytest.mark.asyncio
+async def test_auth_callback_is_admin_user(app):
+    app.config['ADMIN_USERS_USERNAME'] = 'jane.admin@edu.org, bob@edu.org'
+    headers = {
+        ConfigConstants.USERNAME_HEADER: 'jane.admin@edu.org',
+    }
+    request, response = await app.asgi_client.get('/auth', headers=headers)
+    assert response.status == 200
+    assert response.content_type == 'application/json'
+    userdata = response.json
+    assert userdata.get('outcome') == 'user'
+    assert userdata.get('username') == headers.get(ConfigConstants.USERNAME_HEADER)
+    roles = userdata.get('roles')
+    assert 'ROLE_TOBIRA_ADMIN' in roles
+    assert 'ROLE_TOBIRA_EDITOR' in roles
+    assert 'ROLE_TOBIRA_STUDIO' in roles
+    assert 'ROLE_TOBIRA_UPLOAD' in roles
+
+
+@pytest.mark.asyncio
+async def test_auth_callback_is_not_admin_user(app):
+    app.config['ADMIN_USERS_USERNAME'] = 'jane.admin@edu.org, bob@edu.org'
+    headers = {
+        ConfigConstants.USERNAME_HEADER: 'jane.nonadmin@edu.org',
+    }
+    request, response = await app.asgi_client.get('/auth', headers=headers)
+    assert response.status == 200
+    assert response.content_type == 'application/json'
+    userdata = response.json
+    assert userdata.get('outcome') == 'user'
+    assert userdata.get('username') == headers.get(ConfigConstants.USERNAME_HEADER)
+    roles = userdata.get('roles')
+    assert 'ROLE_TOBIRA_ADMIN' not in roles
