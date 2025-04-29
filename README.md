@@ -27,7 +27,7 @@ pip install -r requirements-dev.txt
 
 At this point we have a python virtual environment with all project dependencies installed.
 From here you can start develop the customizations for your institution.
-To run the project during development you can use a shell script `sh scripts/run.sh`
+To run the project during development you can use a shell script `scripts/run.sh`
 or use python wrapper directly `PYTHONPATH=src python src/main.py`.
 You may want to set some environment variables.
 They are listed and documented [here](src/tobiraauth/conf/tobira-auth.env).
