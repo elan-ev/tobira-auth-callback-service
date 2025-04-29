@@ -83,7 +83,7 @@ async def login_user(request: Request, username: str, password: str) -> dict:
         userdata = response.json()
     if not userdata or 'username' not in userdata or 'email' not in userdata:
         return result
-    user_role = f'ROLE_USER_{re.sub("[^a-zA-Z0-9]", '_', username.strip()).upper()}'
+    user_role = f'ROLE_USER_{re.sub("[^a-zA-Z0-9]", "_", username.strip()).upper()}'
     roles = await get_user_roles(request, username)
     result = {
       'outcome': 'user',
