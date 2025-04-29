@@ -7,8 +7,8 @@ from httpx import AsyncClient
 from sanic import Blueprint, Request
 from sanic.log import logger
 from sanic.response import json, JSONResponse
+from tobiraauth.common import get_user_roles, get_user_role
 
-from tobiraauth.auth_callback import get_user_roles
 from tobiraauth.utils import get_config
 
 login_callback_bp = Blueprint('login_callback', url_prefix='/login')
@@ -83,7 +83,7 @@ async def login_user(request: Request, username: str, password: str) -> dict:
         userdata = response.json()
     if not userdata or 'username' not in userdata or 'email' not in userdata:
         return result
-    user_role = f'ROLE_USER_{re.sub("[^a-zA-Z0-9]", "_", username.strip()).upper()}'
+    user_role = get_user_role(username)
     roles = await get_user_roles(request, username)
     result = {
       'outcome': 'user',
